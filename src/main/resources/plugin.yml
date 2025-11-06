@@ -1,0 +1,8 @@
+name: LG-UHC-S1
+version: '${project.version}'
+main: scriptservice.uhc.loupgarou.Main
+load: STARTUP
+
+commands:
+  lg:
+    description: la main commande pour le loup-garou uhc.
