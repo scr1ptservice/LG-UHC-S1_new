@@ -50,12 +50,12 @@ public class serverListPing implements Listener {
         double length = 0;
         ChatColor pholder = null;
         for (int i = 0; i < chars.length; i++) { // Loop through all characters
-            // Check if the character is a ColorCode..
+            // Check if the character is a ColorCode
             if (chars[i] == '§' && chars.length != (i + 1) && (pholder = ChatColor.getByChar(chars[i + 1])) != null) {
                 if (pholder != ChatColor.UNDERLINE && pholder != ChatColor.ITALIC
                         && pholder != ChatColor.STRIKETHROUGH && pholder != ChatColor.MAGIC) {
                     isBold = (chars[i + 1] == 'l'); // Setting bold  to true or false, depending on if the ChatColor is Bold.
-                    length-=2; // Removing TWO from the length, of the string, because we don't wanna count color codes. (c'est 2 chars, j'ai fix)
+                    length-=2; // Removing TWO from the length, of the string, because we don't want to count color codes. (c'est 2 chars, j'ai fix)
                     i += isBold ? 1 : 0;
                 }
             } else {
@@ -80,31 +80,31 @@ public class serverListPing implements Listener {
 
     @EventHandler
     public void onPing(ServerListPingEvent event) {
-        int randomNum = rand.nextInt(100 - 1 + 1) + 1; // +1 makes it inclusive of y
+        int randomNum = rand.nextInt(101);
 
-        String message = centerText(_dgray+_bold+"✮  "+_purple+_bold+"scriptservice"+_white+_bold+" UHC"+_dgray+" - "+_white+"1.8.9"+_dgray+_bold+"  ✮", 44)+"\n";
-        String afterMessage;
+        String message = centerText(_dgray+_bold+"✮  "+_dgreen+_bold+"scriptservice"+_green+_bold+" UHC"+_dgray+" - "+_white+"1.8.9"+_dgray+_bold+"  ✮", 44)+"\n";
+        String afterMessage = centerText(_blue+"Loup-Garou S1"+_dgray+_bold+" | "+_white+"blah blah blah.",48);
 
         if (randomNum == 50) {
-            message = centerText(_dgray+_bold+"✦  "+_pink+_bold+"femboyprime"+_white+_bold+" UHC"+_dgray+" - "+_white+"1.8.9"+_dgray+_bold+"  ✦", 42)+"\n";
+            message = centerText(_dgray+_bold+"✦  "+_pink+_bold+"femboyprime"+_purple+_bold+" UHC"+_dgray+" - "+_white+"1.8.9"+_dgray+_bold+"  ✦", 42)+"\n";
         }
 
         switch (main.state) {
             case WAITING:
-                afterMessage = centerText(_blue+"Loup-Garou S1"+_dgray+_bold+" | "+_white+"En attente de joueur.",50);
+                afterMessage = centerText(_blue+"Loup-Garou S1"+_dgray+_bold+" | "+_white+"En attente de joueur.",48);
                 break;
             case STARTING:
-                afterMessage = centerText(_blue+"Loup-Garou S1"+_dgray+_bold+" | "+_white+"Demarrage de la partie.",50);
+                afterMessage = centerText(_blue+"Loup-Garou S1"+_dgray+_bold+" | "+_white+"Demarrage de la partie.",48);
                 break;
             case PREGAME:
             case GAME:
-                afterMessage = centerText(_blue+"Loup-Garou S1"+_dgray+_bold+" | "+_white+"En partie.",50);
+                afterMessage = centerText(_blue+"Loup-Garou S1"+_dgray+_bold+" | "+_white+"En partie.",48);
                 break;
             case FINISH:
-                afterMessage = centerText(_blue+"Loup-Garou S1"+_dgray+_bold+" | "+_white+"Partie fini.",50);
+                afterMessage = centerText(_blue+"Loup-Garou S1"+_dgray+_bold+" | "+_white+"Partie fini.",48);
                 break;
             default:
-                afterMessage = centerText(_blue+"Loup-Garou S1"+_dgray+_bold+" | "+_white+"blah blah blah.",50);
+                afterMessage = centerText(_blue+"Loup-Garou S1"+_dgray+_bold+" | "+_white+"blah blah blah.",48);
                 break;
 
         }

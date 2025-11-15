@@ -1,21 +1,10 @@
 package scriptservice.uhc.loupgarou.utils;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import scriptservice.uhc.loupgarou.Main;
-import scriptservice.uhc.loupgarou.enums.roles;
-
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class mapUtils {
     private final Main main;
-    public HashMap<Integer, roles> roleListInt = new HashMap<>();
-
     public mapUtils(Main main) {
         this.main = main;
     }
@@ -51,7 +40,7 @@ public class mapUtils {
         main.world = player.getWorld();
         main.worldName = player.getWorld().getName();
 
-        player.sendMessage(main.chatPrefix_debug + "set main map to "+_green+main.worldName+_gray+".");
+        player.sendMessage(main.chatPrefix_debug + "Set main map to "+_green+main.worldName+_gray+".");
     }
     //---- fonctions ----//
 }

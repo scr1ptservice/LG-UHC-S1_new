@@ -37,8 +37,12 @@ public class playerFallDamage implements Listener {
         joueur joueur = main.gameUtils.getJoueur(player);
 
         // isProtected check
-        if (joueur.isProtected) {
+        if (joueur.isProtected || joueur.isProtected_once) {
             event.setCancelled(true);
+
+            if (joueur.isProtected_once) {
+                joueur.isProtected_once = false;
+            }
         }
 
     }

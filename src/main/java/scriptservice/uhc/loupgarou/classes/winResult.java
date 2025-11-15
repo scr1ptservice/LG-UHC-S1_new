@@ -3,9 +3,9 @@ package scriptservice.uhc.loupgarou.classes;
 import scriptservice.uhc.loupgarou.enums.camps;
 
 public class winResult {
-    private boolean _isWin;
-    private String _winMessage;
-    private camps _winCamp;
+    private final boolean _isWin;
+    private final String _winMessage;
+    private final camps _winCamp;
 
     // public "set"
     public winResult(boolean isWin, String winMessage, camps winCamp) {

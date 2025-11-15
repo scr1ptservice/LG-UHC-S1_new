@@ -2,12 +2,12 @@ package scriptservice.uhc.loupgarou.enums;
 
 public enum roles {
     // https://minecraft.fandom.com/fr/wiki/Loup-Garou_UHC
-    Petite_Fille("Petite File",             camps.Village, 0, "§a", 10),
+    Petite_Fille("Petite File",             camps.Village, 1, "§a", 10),
     Sorciere("Sorciere",                    camps.Village, 0, "§a", 10),
     Voyante_Bavarde("Voyante Bavarde",      camps.Village, 0, "§a", 10),
     Chasseur("Chasseur",                    camps.Village, 0, "§a", 10),
     Salvateur("Salvateur",                  camps.Village, 0, "§a", 10),
-    Ancien("Ancien",                        camps.Village, 1, "§a", 10),
+    Ancien("Ancien",                        camps.Village, 0, "§a", 10),
     Pyromane("Pyromane",                    camps.Village, 0, "§a", 10),
     Chaman("Chaman",                        camps.Village, 0, "§a", 10),
     Simple_Villageois("Simple Villageois",  camps.Village, 0, "§a", 10),
@@ -28,7 +28,7 @@ public enum roles {
         this.nom = nom;
         this.camp = camp;
         this.number = number;
-        this.description = "§9Votre objectif est de .";
+        this.description = "...";
         this.strcolor = strcolor;
         this.intcolor = intcolor;
     }

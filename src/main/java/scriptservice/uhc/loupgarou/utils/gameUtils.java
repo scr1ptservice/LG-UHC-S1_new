@@ -58,6 +58,13 @@ public class gameUtils {
 
     public HashMap<Player, joueur> playerJoueur = new HashMap<>();
     public HashMap<joueur, Player> joueurPlayer = new HashMap<>();
+
+    public UUID enfantSauvage = null;
+    public UUID enfantSauvageTarget = null;
+    public UUID chaman = null;
+
+    public UUID host = null;
+    public ArrayList<UUID> cohosts = new ArrayList<UUID>();
     //---- game stuff ----//
 
     //---- fonctions ----//
@@ -283,6 +290,12 @@ public class gameUtils {
                 joueurToGive.setRole(role);
                 joueurToGive.setCamp(role.getCamp());
 
+                if (role == roles.Chaman) {
+                    chaman = joueurToGive.getUniqueId();
+                } else if (role == roles.Enfant_Sauvage) {
+                    enfantSauvage = joueurToGive.getUniqueId();
+                }
+
                 // give effects
                 main.powerUtils.givePermanent(joueurToGive);
                 main.powerUtils.giveOneTime(joueurToGive);
@@ -297,7 +310,7 @@ public class gameUtils {
                 }
 
                 // envoie les messages
-                joueurToGive.getPlayer().sendMessage(new String[]{(main.chatPrefix + "Vous êtes " + role.getStrColor() + role.getName() + _white), (role.getDescription())});
+                joueurToGive.getPlayer().sendMessage(new String[]{(main.chatPrefix_prive + "Vous êtes " + role.getStrColor() + role.getName() + _gray), role.getDescription()});
 
             }
 
@@ -311,14 +324,36 @@ public class gameUtils {
         return (getJoueur(player) != null);
     }
 
-    public joueur getJoueur(Player mainPlayer) {
-        for (Player player : playerJoueur.keySet()) {
-            if (player.getUniqueId().toString().equals( mainPlayer.getUniqueId().toString() )) {
-                return playerJoueur.get(player);
+    public joueur getJoueur(Player player) {
+        for (Player player1 : playerJoueur.keySet()) {
+            if (player1.getUniqueId().toString().equals( player.getUniqueId().toString() )) {
+                return playerJoueur.get(player1);
             }
         }
 
         return null;
+    }
+
+    public boolean isHost(Player player) {
+        if (host == null) {
+            return false;
+        }
+
+        return (player.getUniqueId().toString().equals(host.toString()));
+    }
+
+    public boolean isCohost(Player player) {
+        if (host == null) {
+            return false;
+        }
+
+        for (UUID cohost : main.gameUtils.cohosts) {
+            if (player.getUniqueId().toString().equals(cohost.toString())) {
+                return true;
+            }
+        }
+
+        return false;
     }
     //---- fonctions ----//
 }

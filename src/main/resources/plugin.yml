@@ -5,4 +5,8 @@ load: STARTUP
 
 commands:
   lg:
-    description: la main commande pour le loup-garou uhc.
+    description: la commande principale pour le loup-garou uhc.
+  sethost:
+    description: designe l'host de la game.
+  cohost:
+    description: la commande principale pour les co-host.

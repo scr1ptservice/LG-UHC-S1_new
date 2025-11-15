@@ -5,8 +5,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import scriptservice.uhc.loupgarou.Main;
+import scriptservice.uhc.loupgarou.classes.commandResult;
 import scriptservice.uhc.loupgarou.classes.joueur;
 import scriptservice.uhc.loupgarou.resources.ScoreboardSign;
+
+import java.util.UUID;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -45,7 +48,23 @@ public class playerUtils {
 
     //---- fonctions ----//
     public boolean isOwner(Player player) {
-        return ( player.getUniqueId().toString().equals("0fc289a2-8dda-429a-b727-7f1e9811d747") );
+        return player.getUniqueId().toString().equals("0fc289a2-8dda-429a-b727-7f1e9811d747");
+    }
+
+    public boolean isOwner(UUID uuid) {
+        return uuid.toString().equals("0fc289a2-8dda-429a-b727-7f1e9811d747");
+    }
+
+    public commandResult hasPermission(Player player) {
+        if (main.gameUtils.isHost(player)) {
+            return new commandResult(true, "HOST");
+        }
+
+        if (main.gameUtils.isCohost(player)) {
+            return new commandResult(true, "CO-HOST");
+        }
+
+        return new commandResult(false, "");
     }
 
     public void playSound(Player player, Sound soundPlayed, float v, float v1) {
@@ -82,10 +101,10 @@ public class playerUtils {
 
         scoreboard.setLine(5," ");
         scoreboard.setLine(6, ChatColor.AQUA + "Episode " + ChatColor.GOLD + main.gameUtils.episodeInt);
-        scoreboard.setLine(7, ChatColor.RED + "" + jrs + ChatColor.DARK_RED + " Joueurs");
+        scoreboard.setLine(7, ChatColor.RED + "" + jrs + ChatColor.DARK_RED + ((jrs == 1) ? " Joueur" : " Joueurs"));
         scoreboard.setLine(8, "  ");
         scoreboard.setLine(9, ChatColor.GOLD + "Timer: " + ChatColor.YELLOW + "00:00");
-        scoreboard.setLine(10, ChatColor.GOLD + "Cycle: " + ChatColor.YELLOW + "Nuit");
+        scoreboard.setLine(10, ChatColor.GOLD + "Cycle: " + ChatColor.YELLOW + (main.gameUtils.cycle ? "Jour" : "Nuit"));
         scoreboard.setLine(11, "   ");
         scoreboard.setLine(12, ChatColor.DARK_GREEN + "Border: " + ChatColor.GREEN + (player.getWorld().getWorldBorder().getSize() / 2));
         scoreboard.setLine(13, "    ");

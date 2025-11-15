@@ -1,26 +1,22 @@
 package scriptservice.uhc.loupgarou.utils;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 import scriptservice.uhc.loupgarou.Main;
 import scriptservice.uhc.loupgarou.classes.joueur;
 import scriptservice.uhc.loupgarou.enums.roles;
-import scriptservice.uhc.loupgarou.resources.ScoreboardSign;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.bukkit.Bukkit.getServer;
+import java.util.*;
 
 public class powerUtils {
     private final Main main;
@@ -73,6 +69,25 @@ public class powerUtils {
         Bukkit.getScheduler().runTask(this.main, () -> joueur.getPlayer().addPotionEffects(collection));
     }
 
+    public ArrayList<Player> getNearbyPlayers(Player player, double range) {
+        ArrayList<Player> nearby = new ArrayList<Player>();
+        for (Entity entity : player.getNearbyEntities(range, range, range)) {
+            if (entity instanceof Player) {
+                Player nPlayer = (Player) entity;
+
+                if (main.gameUtils.isPlayerJoueur(nPlayer)) {
+                    joueur joueur = main.gameUtils.getJoueur(nPlayer);
+
+                    if (joueur.isAlive() && nPlayer.getGameMode() != GameMode.SPECTATOR) {
+                        nearby.add(nPlayer);
+                    }
+                }
+            }
+        }
+
+        return nearby;
+    }
+
     public void givePermanent(joueur joueur) {
         Player player = joueur.getPlayer();
 
@@ -101,7 +116,7 @@ public class powerUtils {
 
         if (joueur.getRole() == roles.Petite_Fille) {
             //-// default minecraft potion
-            ItemStack speed_1_8mn = new ItemStack(Material.POTION, 2, (short)8258);
+            ItemStack speed_1_8mn = new Potion(PotionType.SPEED, 2,  false, true).toItemStack(2);
             player.getInventory().addItem(speed_1_8mn);
 
         } else if (joueur.getRole() == roles.Sorciere) {
@@ -191,7 +206,6 @@ public class powerUtils {
                 player.getInventory().addItem(lavabuckets);
             }
 
-
             // flint and steel
             ItemStack flintandsteel = new ItemStack(Material.FLINT_AND_STEEL, 1);
 
@@ -206,6 +220,65 @@ public class powerUtils {
 
             Collection<PotionEffect> effects = Arrays.asList(weakness, invisibility);
             giveEffects(joueur, effects);
+
+            TimerTask middleNight = new TimerTask() {
+                final ArrayList<String> messages = new ArrayList<String>();
+
+                @Override
+                public void run() {
+                    ArrayList<Player> nearby = getNearbyPlayers(joueur.getPlayer(), 100);
+
+                    switch (nearby.size()) {
+                        case 0:
+                            joueur.sendMessage(main.chatPrefix + "Aucun joueur se trouve dans un rayon de 100 blocs.");
+                            break;
+                        case 1:
+                            messages.add(main.chatPrefix + "Le joueur suivant se situe dans un rayon de 100 blocks: ");
+                            for (Player player: nearby) {
+                                messages.add(_red+"- "+_white+player.getName());
+                            }
+
+                            joueur.sendMessage(messages.toArray(new String[0]));
+                            break;
+                        default:
+                            messages.add(main.chatPrefix + "Les joueurs suivant se situent dans un rayon de 100 blocks: ");
+                            for (Player player: nearby) {
+                                messages.add(_red+"- "+_white+player.getName());
+                            }
+
+                            joueur.sendMessage(messages.toArray(new String[0]));
+                            break;
+                    }
+                }
+            };
+
+            new Timer().schedule(middleNight, (main.timerUtils.timeForCycle / 2)); // timeForCycle = 10mn, c'est au millieu de la nuit
+
+            // faut give les joueurs autour d'elle (rayon=100b)
+            ArrayList<String> messages = new ArrayList<String>();
+            final ArrayList<Player> nearby = getNearbyPlayers(joueur.getPlayer(), 100);
+
+            switch (nearby.size()) {
+                case 0:
+                    joueur.sendMessage(main.chatPrefix_prive + "Aucun joueur se trouve dans un rayon de 100 blocs.");
+                    break;
+                case 1:
+                    messages.add(main.chatPrefix_prive + "Le joueur suivant se situe dans un rayon de 100 blocks: ");
+                    for (Player player: nearby) {
+                        messages.add(_red+"- "+_white+player.getName());
+                    }
+
+                    joueur.sendMessage(messages.toArray(new String[0]));
+                    break;
+                default:
+                    messages.add(main.chatPrefix_prive + "Les joueurs suivant se situent dans un rayon de 100 blocks: ");
+                    for (Player player: nearby) {
+                        messages.add(_red+"- "+_white+player.getName());
+                    }
+
+                    joueur.sendMessage(messages.toArray(new String[0]));
+                    break;
+            }
         }
     }
 

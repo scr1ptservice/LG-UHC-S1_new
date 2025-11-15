@@ -27,6 +27,8 @@ public class joueur {
     public boolean canVote = true;
     public joueur votedFor;
 
+    public boolean isProtected_once = false; // used for respawning
+
     //-// role stuff
     // sorciere
     public boolean canRevive = true;
@@ -40,11 +42,10 @@ public class joueur {
     public Player lastProtected = null;
     // ancien
     public boolean hasRespawned = false;
-    // chaman
-    public boolean isChaman = false;
     // es
     public boolean isTransfo = false;
-    public joueur sauvageTarget = null;
+    // chaman
+    public boolean hasTextedChaman = false;
 
     //--// MAIN
     public joueur(Player player, UUID uuid, Main main) {
@@ -73,10 +74,6 @@ public class joueur {
 
     public void setRole(roles role) {
         this.role = role;
-
-        if (role == roles.Chaman) {
-            this.isChaman = true;
-        }
     }
 
     public void setCamp(camps camp) {
@@ -95,26 +92,18 @@ public class joueur {
         this.mort = bool;
     }
 
-    public void setSauvageTarget(joueur joueur) {
-        this.sauvageTarget = joueur;
-    }
-
     // "get" methods
     public Player getPlayer() { return player; }
     public String getName() { return username; }
     public roles getRole() { return role; }
     public camps getCamp() { return camp; }
     public UUID getUUID() { return uuid; }
+    public UUID getUniqueId() { return uuid; }
     public ScoreboardSign getScoreboard() { return scoreboard; }
-    public joueur getSauvageTarget() { return sauvageTarget; }
 
     // "is" methods
     public boolean isCouple() {return hasCouple(); }
     public boolean isAlive() { return (!mort); }
-
-    public boolean isSauvageTarget(joueur enfantSauvage) {
-        return enfantSauvage.getSauvageTarget().getUUID().toString().equalsIgnoreCase(  getUUID().toString()  );
-    }
 
     public boolean isLoup_Effect() {
         if (getRole()  == roles.LG_Blanc) {
@@ -161,5 +150,24 @@ public class joueur {
     // "has" methods
     public boolean hasCouple() {
         return (couple != null);
+    }
+
+    // other methods
+    public void sendMessage(String s) {
+        if (getPlayer() == null) { return; }
+
+        getPlayer().sendMessage(s);
+    }
+
+    public void sendMessage(String[] strings) {
+        if (getPlayer() == null) { return; }
+
+        getPlayer().sendMessage(strings);
+    }
+
+    public void sendPMessage(String s) {
+        if (getPlayer() == null) { return; }
+
+        getPlayer().sendMessage(main.chatPrefix_prive + s);
     }
 }
