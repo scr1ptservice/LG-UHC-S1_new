@@ -8,6 +8,20 @@ import scriptservice.uhc.loupgarou.enums.*;
 import scriptservice.uhc.loupgarou.events.*;
 import scriptservice.uhc.loupgarou.utils.*;
 
+/*
+    private void _test(CommandSender sender, String[] args) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+
+        } else if (sender instanceof ConsoleCommandSender) {
+            ConsoleCommandSender player = (ConsoleCommandSender) sender;
+
+        } else {
+            System.out.println("[LG-UHC-S1] '_test(sender)' sender has unhandled class: " + sender.getClass());
+        }
+    }
+ */
+
 public final class Main extends JavaPlugin {
     //---- color strings ----//
     private final String _black = "§0";
@@ -73,7 +87,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new playerFallDamage(this), this);
         getServer().getPluginManager().registerEvents(new serverListPing(this), this);
         getServer().getPluginManager().registerEvents(new playerChat(this), this);
-        getServer().getPluginManager().registerEvents(new playerJoin(this), this);
+        getServer().getPluginManager().registerEvents(new playerJoinLeave(this), this);
 
         // les descriptions des differents roles
         roles.Petite_Fille.setDescription(_gray + "Votre objectif est de gagner avec les " + _green + "Villageois" + _gray + ". Vous disposez de l'effet " + _dblue + "Night Vision" + _gray + " en permanence, ainsi que des effets "+_gray+"Invisibility I"+_gray+" et " +_dgray+ "Weakness I" + _gray + " la nuit. Vous disposez également de 2 potions de " + _white + "Speed I" + _gray + ". Au crépuscule et au milieu de la nuit, vous connaîtrez les pseudos des joueurs situés dans un rayon de 100 blocks autour de vous.");
@@ -90,10 +104,12 @@ public final class Main extends JavaPlugin {
 
         roles.LG_Simple.setDescription(_gray + "Votre objectif est de gagner avec les " + _red + "Loups-Garous" + _gray + ". Pour ce faire, vous disposez des effets " + _red + "Strength I" + _gray + " et " + _dblue + "Night Vision" + _gray + ". A chaque kill, vous gagnez 1 minute de "+_white+"Speed" + _gray + " et 4 coeurs d'"+_yellow+"Absorption" + _gray + " pendant 4 minutes.");
         roles.LG_Blanc.setDescription(_gray + "Votre objectif est de gagner " + _gold + "seul" + _gray + ". Pour ce faire, vous disposez des effets " + _red + "Strength I" + _gray + " et " + _dblue + "Night Vision" + _gray + ", ainsi que d'une deuxième barre de vie. A chaque kill, vous gagnez 1 minute de "+_white+"Speed" + _gray + " et 4 coeurs d'"+_yellow+"Absorption" + _gray + " pendant 4 minutes.");
+
+        System.out.println("[LG-UHC-S1] Enabled plugin successfully !");
     }
 
     @Override
     public void onDisable() {
-        System.out.println("c'est ciao :(");
+        System.out.println("[LG-UHC-S1] Disabled plugin successfully !");
     }
 }

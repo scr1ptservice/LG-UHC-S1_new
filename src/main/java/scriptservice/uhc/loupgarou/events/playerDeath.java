@@ -1,5 +1,6 @@
 package scriptservice.uhc.loupgarou.events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -53,9 +54,30 @@ public class playerDeath implements Listener {
     // pour l'enfant sauvage & le chasseur (pour l'instant)
     private void tryDeathEvents(Player playerMort, joueur joueurMort) {
 
+        if (playerMort.getUniqueId().toString().equals(main.gameUtils.enfantSauvage.toString())) {
+            main.gameUtils.enfantSauvage = null;
+            main.gameUtils.enfantSauvageTarget = null;
+        } else if (playerMort.getUniqueId().toString().equals(main.gameUtils.chaman.toString())) {
+            main.gameUtils.chaman = null;
+        }
+
+        if (main.gameUtils.enfantSauvage != null && main.gameUtils.enfantSauvageTarget != null) {
+            if (main.gameUtils.enfantSauvageTarget.toString().equals(playerMort.getUniqueId().toString())) {
+                joueur enfantSauvage = main.gameUtils.getJoueur(Bukkit.getPlayer(main.gameUtils.enfantSauvage));
+
+                if (enfantSauvage == null) {
+                    return;
+                }
+
+                enfantSauvage.isTransfo = true;
+                enfantSauvage.sendPMessage("Votre "+_yellow+"modele"+_gray+" est "+_red+"mort"+_gray+"! Vous devenez donc "+_red+"Loup-Garou"+_gray+" et devez gagner avec "+_red+"eux"+_gray+", vous avez aussi accès à la liste des "+_red+"loup-garous"+_gray+" avec la commande "+_yellow+"/lg liste"+_gray+".");
+            }
+        }
+
+
         if (joueurMort.getRole() == roles.Chasseur) {
             joueurMort.canFire = true;
-            joueurMort.sendPMessage("Vous êtes mort, vous avez une minute pour tirer sur une personne grâce a la commande "+_yellow+"/lg tirer <pseudo>"+_white+".");
+            joueurMort.sendPMessage("Vous êtes mort, vous avez une minute pour tirer sur une personne grâce a la commande "+_yellow+"/lg tirer <pseudo>"+_gray+".");
 
             TimerTask offTask = new TimerTask() {
                 @Override
@@ -68,25 +90,21 @@ public class playerDeath implements Listener {
                 }
             };
 
-            new Timer().schedule(offTask, 60*1000); // timeForCycle = 10mn, c'est au millieu de la nuit
-
-        } else if (joueurMort.getRole() == roles.Enfant_Sauvage) {
-            
+            new Timer().schedule(offTask, 60*1000);
         }
     }
 
-    private void _respawn(Player player, joueur joueurMort) {
+    private void _respawn(Player playerMort, joueur joueurMort) {
         if (joueurMort.getRole() == roles.Ancien) {
-            joueurMort.getPlayer().sendMessage(main.chatPrefix+"Vous avez été tué par un "+_red+"Loup-Garou"+_white+"! Vous ressuscitez mais perdez votre effet de "+_gray+"résistance"+_white+".");
+            joueurMort.sendPMessage("Vous avez été tué par un "+_red+"Loup-Garou"+_gray+"! Vous ressuscitez mais perdez votre effet de "+_white+"résistance"+_gray+".");
         }
 
-
-        Location respawnLocation = new Location(player.getWorld(), (-300 + Math.random() * 600), 100, (-300 + Math.random() * 600)); // MAKE RANDOM
+        Location respawnLocation = new Location(playerMort.getWorld(), (-300 + Math.random() * 600), 100, (-300 + Math.random() * 600)); // MAKE RANDOM
         joueurMort.hasRespawned = true;
         joueurMort.isProtected_once = true;
 
-        player.spigot().respawn();
-        player.teleport(respawnLocation);
+        playerMort.spigot().respawn();
+        playerMort.teleport(respawnLocation);
     }
 
     private void _kill(Player playerMort, joueur joueurMort) {
@@ -117,7 +135,7 @@ public class playerDeath implements Listener {
         tryDeathEvents(playerMort, joueurMort);
 
         // le message
-        main.playerUtils.sendMessageToAll(new String[]{ChatColor.RED + "=========☠==========","§2Le village a perdu un de ses membres : " + joueurMort.getRole().getStrColor() + "§l" + joueurMort.getName() + "§r§2, qui était " + joueurMort.getRole().getStrColor() + "§o" + joueurMort.getRole().getName() + "§r§2.", "§c===================="});
+        main.playerUtils.sendMessageToAll(new String[]{ChatColor.RED + "▰▰▰▰▰▰▰▰▰☠▰▰▰▰▰▰▰▰▰▰",ChatColor.WHITE + "Le village a perdu un de ses membres : " + joueurMort.getRole().getStrColor() + "§l" + joueurMort.getName() + "§r, qui était " + joueurMort.getRole().getStrColor() + "§o" + joueurMort.getRole().getName() + "§r.", ChatColor.RED + "▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰"});
     }
 
     @EventHandler
@@ -145,7 +163,7 @@ public class playerDeath implements Listener {
                     } else {
                         // aussinon x) (sur les prochaines saisons -> check si le type est solo ou non)
                         killer.setHealth((killer.getHealth() / 2));
-                        joueurKiller.getPlayer().sendMessage(main.chatPrefix+"Vous avez tué l'"+_green+"Ancien"+_white+", vous perdez donc la moitié de votre vie effective.");
+                        joueurKiller.sendPMessage("Vous avez tué l'"+_green+"Ancien"+_gray+", vous perdez donc la moitié de votre vie effective.");
 
                         event.setKeepInventory(false);
                         _kill(player, joueurMort);

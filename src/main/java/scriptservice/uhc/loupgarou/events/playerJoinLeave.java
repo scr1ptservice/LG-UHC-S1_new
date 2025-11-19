@@ -1,16 +1,19 @@
 package scriptservice.uhc.loupgarou.events;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import scriptservice.uhc.loupgarou.Main;
 import scriptservice.uhc.loupgarou.classes.joueur;
 import scriptservice.uhc.loupgarou.resources.ScoreboardSign;
 
-public class playerJoin implements Listener {
+public class playerJoinLeave implements Listener {
     private final Main main;
-    public playerJoin(Main main) {
+    public playerJoinLeave(Main main) {
         this.main = main;
     }
 
@@ -58,8 +61,15 @@ public class playerJoin implements Listener {
 
             // pas de join message :)
             event.setJoinMessage(null);
+        } else {
+            event.setJoinMessage(ChatColor.DARK_GRAY + "[" + ChatColor.GREEN + "»" + ChatColor.DARK_GRAY + "] " + ChatColor.YELLOW + ChatColor.BOLD + player.getName() + ChatColor.RESET + ChatColor.WHITE + " (" + ChatColor.GREEN + Bukkit.getOnlinePlayers().size() + ChatColor.WHITE + "/" + ChatColor.RED + Bukkit.getMaxPlayers() + ChatColor.WHITE + ")");
         }
     }
 
+    @EventHandler
+    public void playerQuitEvent(PlayerQuitEvent event) {
+        final Player player = event.getPlayer();
 
+        event.setQuitMessage(ChatColor.DARK_GRAY + "[" + ChatColor.RED + "«" + ChatColor.DARK_GRAY + "] " + ChatColor.YELLOW + ChatColor.BOLD + player.getName() + ChatColor.RESET + ChatColor.WHITE + " (" + ChatColor.GREEN + Bukkit.getOnlinePlayers().size() + ChatColor.WHITE + "/" + ChatColor.RED + Bukkit.getMaxPlayers() + ChatColor.WHITE + ")");
+    }
 }

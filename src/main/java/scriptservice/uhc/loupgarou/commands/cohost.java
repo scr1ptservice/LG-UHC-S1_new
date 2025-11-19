@@ -41,165 +41,189 @@ public class cohost implements CommandExecutor {
     private final String _reset = "§r";
     //---- color strings ----//
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
+    // commands
+    private void _liste(CommandSender sender, String[] args) {
+        StringBuilder message = new StringBuilder((main.configPrefix + "Co-hosts: " + _red));
+
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+
+            if (main.gameUtils.cohosts.isEmpty()) {
+                message.append(_red).append("Aucun.");
+            } else {
+                for (UUID id : main.gameUtils.cohosts) {
+                    Player cohost = Bukkit.getPlayer(id);
+                    if (cohost == null) {
+                        continue;
+                    }
+
+                    message.append(_red).append(cohost.getName()).append(", ");
+                }
+            }
+
+            player.sendMessage(message.substring(0, message.length() - (main.gameUtils.cohosts.isEmpty() ? 0 : 2))  );
+        } else if (sender instanceof ConsoleCommandSender) {
+            ConsoleCommandSender player = (ConsoleCommandSender) sender;
+
+            if (main.gameUtils.cohosts.isEmpty()) {
+                message.append(_red).append("Aucun.");
+            } else {
+                for (UUID id : main.gameUtils.cohosts) {
+                    Player cohost = Bukkit.getPlayer(id);
+                    if (cohost == null) {
+                        continue;
+                    }
+
+                    message.append(_red).append(cohost.getName()).append(", ");
+                }
+            }
+
+            player.sendMessage(message.substring(0, message.length() - (main.gameUtils.cohosts.isEmpty() ? 0 : 2))  );
+        } else {
+            System.out.println("[LG-UHC-S1] '_liste(sender)' sender has unhandled class: " + sender.getClass());
+        }
+    }
+
+    private void _add(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
             if (!main.playerUtils.isOwner(player) || !main.gameUtils.isHost(player)) {
                 player.sendMessage(main.chatPrefix + "Vous n'êtes pas l'host de la partie.");
-                return true;
+                return;
             }
 
-            if (args.length == 0) {
-                player.sendMessage(new String[]{
-                        main.chatPrefix+_bold+"Sous-commandes "+_dgray+"("+_gray+"/cohost ..."+_dgray+")",
-                        _dgray+"> "+_yellow+"list",
-                        _dgray+"> "+_green+"add",
-                        _dgray+"> "+_green+"remove",
-                });
-
-            } else {
-                String sousCommande = args[0];
-
-                if (sousCommande.equalsIgnoreCase("list")) {
-                    StringBuilder message = new StringBuilder((main.configPrefix + "Co-hosts: " + _red));
-                    for (UUID id: main.gameUtils.cohosts) {
-                        Player cohost = Bukkit.getPlayer(id);
-                        if (cohost == null) { continue; }
-
-                        message.append(_red).append(cohost.getName()).append(", ");
-                    }
-
-                    player.sendMessage(message.substring(0, (message.length() - 2)));
-                } else if (sousCommande.equalsIgnoreCase("add")) {
-                    if (!main.playerUtils.isOwner(player) || !main.gameUtils.isHost(player)) {
-                        player.sendMessage(main.configPrefix + "Vous n'êtes pas l'host de la partie.");
-                        return true;
-                    }
-
-                    if (args.length != 1) {
-                        player.sendMessage(main.configPrefix+_red+"Usage: /cohost add <pseudo>");
-                        return true;
-                    }
-
-                    Player cohost = Bukkit.getPlayer(args[0]);
-                    if (cohost == null) {
-                        player.sendMessage(main.configPrefix + "Le joueur n'existe pas ou n'est pas connecté.");
-                        return true;
-                    }
-
-                    if (main.gameUtils.cohosts.contains(cohost.getUniqueId())) {
-                        player.sendMessage(main.configPrefix + "Le joueur est déjà co-host.");
-                        return true;
-                    }
-
-                    main.gameUtils.cohosts.add(cohost.getUniqueId());
-                    player.sendMessage(main.configPrefix + _yellow + cohost.getName() + " est désormais "+_pink+"co-host"+_white+".");
-                    cohost.sendMessage(main.configPrefix + "Vous êtes desormais "+_pink+"co-host"+_white+".");
-
-                } else if (sousCommande.equalsIgnoreCase("remove")) {
-                    if (!main.playerUtils.isOwner(player) || !main.gameUtils.isHost(player)) {
-                        player.sendMessage(main.configPrefix + "Vous n'êtes pas l'host de la partie.");
-                        return true;
-                    }
-
-                    if (args.length != 1) {
-                        player.sendMessage(main.configPrefix+_red+"Usage: /cohost remove <pseudo>");
-                        return true;
-                    }
-
-                    Player cohost = Bukkit.getPlayer(args[0]);
-                    if (cohost == null) {
-                        player.sendMessage(main.configPrefix + "Le joueur n'existe pas ou n'est pas connecté.");
-                        return true;
-                    }
-
-                    if (!main.gameUtils.cohosts.contains(cohost.getUniqueId())) {
-                        player.sendMessage(main.configPrefix + "Le joueur n'est pas co-host.");
-                        return true;
-                    }
-
-                    main.gameUtils.cohosts.add(cohost.getUniqueId());
-                    player.sendMessage(main.configPrefix + _yellow + cohost.getName() + " n'est plus "+_pink+"co-host"+_white+".");
-                    cohost.sendMessage(main.configPrefix + "Vous n'êtes plus "+_pink+"co-host"+_white+".");
-
-                }
+            if (args.length != 1) {
+                player.sendMessage(main.configPrefix+_red+"Usage: /cohost add <pseudo>");
+                return;
             }
+
+            Player cohost = Bukkit.getPlayer(args[0]);
+            if (cohost == null) {
+                player.sendMessage(main.configPrefix + "Le joueur n'existe pas ou n'est pas connecté.");
+                return;
+            }
+
+            if (main.gameUtils.cohosts.contains(cohost.getUniqueId())) {
+                player.sendMessage(main.configPrefix + "Le joueur est déjà co-host.");
+                return;
+            }
+
+            main.gameUtils.cohosts.add(cohost.getUniqueId());
+            player.sendMessage(main.configPrefix + _yellow + cohost.getName() + " est désormais "+_pink+"co-host"+_white+".");
+            cohost.sendMessage(main.configPrefix + "Vous êtes desormais "+_pink+"co-host"+_white+".");
+
         } else if (sender instanceof ConsoleCommandSender) {
             ConsoleCommandSender player = (ConsoleCommandSender) sender;
 
-            if (args.length == 0) {
-                player.sendMessage(new String[]{
-                        main.chatPrefix+_bold+"Sous-commandes "+_dgray+"("+_gray+"/cohost ..."+_dgray+")",
-                        _dgray+"> "+_yellow+"list",
-                        _dgray+"> "+_green+"add",
-                        _dgray+"> "+_green+"remove",
-                });
+            if (args.length != 1) {
+                player.sendMessage(main.configPrefix+_red+"Usage: /cohost add <pseudo>");
+                return;
+            }
 
-            } else {
-                String sousCommande = args[0];
+            Player cohost = Bukkit.getPlayer(args[0]);
+            if (cohost == null) {
+                player.sendMessage(main.configPrefix + "Le joueur n'existe pas ou n'est pas connecté.");
+                return;
+            }
 
-                if (sousCommande.equalsIgnoreCase("list")) {
-                    StringBuilder message = new StringBuilder((main.configPrefix + "Co-hosts: " + _red));
+            if (main.gameUtils.cohosts.contains(cohost.getUniqueId())) {
+                player.sendMessage(main.configPrefix + "Le joueur est déjà co-host.");
+                return;
+            }
 
-                    if (main.gameUtils.cohosts.isEmpty()) {
-                        message.append(_red).append("Aucun.");
-                    } else {
-                        for (UUID id : main.gameUtils.cohosts) {
-                            Player cohost = Bukkit.getPlayer(id);
-                            if (cohost == null) {
-                                continue;
-                            }
+            main.gameUtils.cohosts.add(cohost.getUniqueId());
+            player.sendMessage(main.configPrefix + _yellow + cohost.getName() + " est désormais "+_pink+"co-host"+_white+".");
+            cohost.sendMessage(main.configPrefix + "Vous êtes desormais "+_pink+"co-host"+_white+".");
 
-                            message.append(_red).append(cohost.getName()).append(", ");
-                        }
-                    }
+        } else {
+            System.out.println("[LG-UHC-S1] '_add(sender)' sender has unhandled class: " + sender.getClass());
+        }
+    }
 
-                    player.sendMessage(message.substring(0, message.length() - (main.gameUtils.cohosts.isEmpty() ? 0 : 2))  );
-                } else if (sousCommande.equalsIgnoreCase("add")) {
-                    if (args.length != 1) {
-                        player.sendMessage(main.configPrefix+_red+"Usage: /cohost add <pseudo>");
-                        return true;
-                    }
+    private void _remove(CommandSender sender, String[] args) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
 
-                    Player cohost = Bukkit.getPlayer(args[0]);
-                    if (cohost == null) {
-                        player.sendMessage(main.configPrefix + "Le joueur n'existe pas ou n'est pas connecté.");
-                        return true;
-                    }
+            if (!main.playerUtils.isOwner(player) || !main.gameUtils.isHost(player)) {
+                player.sendMessage(main.chatPrefix + "Vous n'êtes pas l'host de la partie.");
+                return;
+            }
 
-                    if (main.gameUtils.cohosts.contains(cohost.getUniqueId())) {
-                        player.sendMessage(main.configPrefix + "Le joueur est déjà co-host.");
-                        return true;
-                    }
+            if (args.length != 1) {
+                player.sendMessage(main.configPrefix+_red+"Usage: /cohost remove <pseudo>");
+                return;
+            }
 
-                    main.gameUtils.cohosts.add(cohost.getUniqueId());
-                    player.sendMessage(main.configPrefix + _yellow + cohost.getName() + " est désormais "+_pink+"co-host"+_white+".");
-                    cohost.sendMessage(main.configPrefix + "Vous êtes desormais "+_pink+"co-host"+_white+".");
+            Player cohost = Bukkit.getPlayer(args[0]);
+            if (cohost == null) {
+                player.sendMessage(main.configPrefix + "Le joueur n'existe pas ou n'est pas connecté.");
+                return;
+            }
 
-                } else if (sousCommande.equalsIgnoreCase("remove")) {
-                    if (args.length != 1) {
-                        player.sendMessage(main.configPrefix+_red+"Usage: /cohost remove <pseudo>");
-                        return true;
-                    }
+            if (!main.gameUtils.cohosts.contains(cohost.getUniqueId())) {
+                player.sendMessage(main.configPrefix + "Le joueur n'est pas co-host.");
+                return;
+            }
 
-                    Player cohost = Bukkit.getPlayer(args[0]);
-                    if (cohost == null) {
-                        player.sendMessage(main.configPrefix + "Le joueur n'existe pas ou n'est pas connecté.");
-                        return true;
-                    }
+            main.gameUtils.cohosts.add(cohost.getUniqueId());
+            player.sendMessage(main.configPrefix + _yellow + cohost.getName() + " n'est plus "+_pink+"co-host"+_white+".");
+            cohost.sendMessage(main.configPrefix + "Vous n'êtes plus "+_pink+"co-host"+_white+".");
 
-                    if (!main.gameUtils.cohosts.contains(cohost.getUniqueId())) {
-                        player.sendMessage(main.configPrefix + "Le joueur n'est pas co-host.");
-                        return true;
-                    }
+        } else if (sender instanceof ConsoleCommandSender) {
+            ConsoleCommandSender player = (ConsoleCommandSender) sender;
 
-                    main.gameUtils.cohosts.add(cohost.getUniqueId());
-                    player.sendMessage(main.configPrefix + _yellow + cohost.getName() + " n'est plus "+_pink+"co-host"+_white+".");
-                    cohost.sendMessage(main.configPrefix + "Vous n'êtes plus "+_pink+"co-host"+_white+".");
+            if (args.length != 1) {
+                player.sendMessage(main.configPrefix+_red+"Usage: /cohost remove <pseudo>");
+                return;
+            }
 
-                }
+            Player cohost = Bukkit.getPlayer(args[0]);
+            if (cohost == null) {
+                player.sendMessage(main.configPrefix + "Le joueur n'existe pas ou n'est pas connecté.");
+                return;
+            }
+
+            if (!main.gameUtils.cohosts.contains(cohost.getUniqueId())) {
+                player.sendMessage(main.configPrefix + "Le joueur n'est pas co-host.");
+                return;
+            }
+
+            main.gameUtils.cohosts.add(cohost.getUniqueId());
+            player.sendMessage(main.configPrefix + _yellow + cohost.getName() + " n'est plus "+_pink+"co-host"+_white+".");
+            cohost.sendMessage(main.configPrefix + "Vous n'êtes plus "+_pink+"co-host"+_white+".");
+
+        } else {
+            System.out.println("[LG-UHC-S1] '_remove(sender)' sender has unhandled class: " + sender.getClass());
+        }
+    }
+
+    private void _cmdlist(CommandSender sender, String[] args) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+
+        } else if (sender instanceof ConsoleCommandSender) {
+            ConsoleCommandSender player = (ConsoleCommandSender) sender;
+
+        } else {
+            System.out.println("[LG-UHC-S1] '_cmdlist(sender)' sender has unhandled class: " + sender.getClass());
+        }
+    }
+
+    // event
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
+        if (args.length == 0) {
+            _cmdlist(sender, args);
+        } else {
+            String sousCommande = args[0];
+
+            if (sousCommande.equalsIgnoreCase("liste") || sousCommande.equalsIgnoreCase("list")) {
+                _liste(sender, args);
+            } else if (sousCommande.equalsIgnoreCase("add")) {
+                _add(sender, args);
+            } else if (sousCommande.equalsIgnoreCase("remove")) {
+                _remove(sender, args);
             }
         }
 

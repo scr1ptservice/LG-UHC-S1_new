@@ -39,66 +39,75 @@ public class sethost implements CommandExecutor {
     private final String _reset = "§r";
     //---- color strings ----//
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-        System.out.println(sender.getClass());
-
+    // command
+    private void _setHost(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
             if (main.playerUtils.isOwner(player)) {
                 main.gameUtils.host = player.getUniqueId();
                 main.playerUtils.sendMessageToAll(main.configPrefix+_gold+player.getName()+_white+" deviens désormais l'"+_pink+"host"+_white+" de la partie.");
-                return true;
+                return;
             }
 
             if (!main.gameUtils.isHost(player)) {
                 player.sendMessage(main.configPrefix + "Vous n'êtes pas l'host de la partie.");
-                return true;
+                return;
             }
 
             if (args.length != 1) {
                 player.sendMessage(main.configPrefix+_red+"Usage: /sethost <pseudo>");
-                return true;
+                return;
             }
 
             Player newHost = Bukkit.getPlayer(args[0]);
             if (newHost == null) {
                 player.sendMessage(main.configPrefix+_red+"Le joueur n'existe pas ou n'est pas connecté.");
-                return true;
+                return;
             }
 
-            if (newHost.getUniqueId().toString().equals(main.gameUtils.host.toString())) {
+            if (main.gameUtils.isHost(newHost)) {
                 player.sendMessage(main.configPrefix+_red+"Le joueur est déjà host.");
-                return true;
+                return;
             }
 
             main.gameUtils.host = newHost.getUniqueId();
             main.playerUtils.sendMessageToAll(main.configPrefix+_gold+newHost.getName()+_white+" deviens désormais l'"+_pink+"host"+_white+" de la partie.");
+
 
         } else if (sender instanceof ConsoleCommandSender) {
             ConsoleCommandSender player = (ConsoleCommandSender) sender;
 
             if (args.length != 1) {
                 player.sendMessage(main.configPrefix+_red+"Usage: /sethost <pseudo>");
-                return true;
+                return;
             }
 
             Player newHost = Bukkit.getPlayer(args[0]);
             if (newHost == null) {
-                player.sendMessage(main.configPrefix + "Le joueur n'existe pas ou n'est pas connecté.");
-                return true;
+                player.sendMessage(main.configPrefix + "Le joueur n'existe pas ou n'est pas connecte.");
+                return;
             }
 
-            if (newHost.getUniqueId().toString().equals(main.gameUtils.host.toString())) {
-                player.sendMessage(main.configPrefix+_red+"Le joueur est déjà host.");
-                return true;
+            if (main.gameUtils.isHost(newHost)) {
+                player.sendMessage(main.configPrefix+_red+"Le joueur est deja host.");
+                return;
             }
 
             main.gameUtils.host = newHost.getUniqueId();
-            main.playerUtils.sendMessageToAll(main.configPrefix+_yellow+newHost.getName()+_white+" deviens désormais l'"+_pink+"host"+_white+" de la partie.");
+            main.playerUtils.sendMessageToAll(main.configPrefix+_yellow+newHost.getName()+_white+" deviens desormais l'"+_pink+"host"+_white+" de la partie.");
             player.sendMessage(main.configPrefix+_yellow+newHost.getName()+_white+" deviens désormais l'"+_pink+"host"+_white+" de la partie.");
+
+
+        } else {
+            System.out.println("[LG-UHC-S1] '_setHost(sender)' sender has unhandled class: " + sender.getClass());
         }
+    }
+
+    // event
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
+        _setHost(sender, args);
 
         return true;
     }

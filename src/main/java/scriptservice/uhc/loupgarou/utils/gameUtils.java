@@ -64,13 +64,14 @@ public class gameUtils {
     public UUID chaman = null;
 
     public UUID host = null;
-    public ArrayList<UUID> cohosts = new ArrayList<UUID>();
+    public ArrayList<UUID> cohosts = new ArrayList<>();
     //---- game stuff ----//
 
     //---- fonctions ----//
     public void startGame() {
         main.state = states.PREGAME;
 
+        // give des scoreboard
         for (Player player : getServer().getOnlinePlayers()) {
             joueur joueur = new joueur(player, player.getUniqueId(), this.main);
 
@@ -81,6 +82,7 @@ public class gameUtils {
             joueur.setScoreboard(scoreboard);
         }
 
+        // timer pour le temps a partie
         main.timerUtils.mainTimer = new Timer();
         main.timerUtils.mainTimerTask = new TimerTask() {
             @Override
@@ -99,6 +101,7 @@ public class gameUtils {
 
         main.timerUtils.mainTimer.scheduleAtFixedRate(main.timerUtils.mainTimerTask, Calendar.getInstance().getTime(), 1000);
 
+        // timer pour le cycle jour/nuit
         main.timerUtils.cycleTimer = new Timer();
         main.timerUtils.cycleTimerTask = new TimerTask() {
             @Override
@@ -162,6 +165,7 @@ public class gameUtils {
 
         main.timerUtils.cycleTimer.scheduleAtFixedRate(main.timerUtils.cycleTimerTask, Calendar.getInstance().getTime(), main.timerUtils.timeForCycle);
 
+        // timer pour les episodes
         main.timerUtils.episodeTimer = new Timer();
         main.timerUtils.episodeTimerTask = new TimerTask() {
             @Override

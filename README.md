@@ -24,7 +24,7 @@
 - **Solitaires**
     - Loup-Garou Blanc
 ---
-# Developpé par scriptservice / scriptservice__
+# Developpé par [femboyservice](https://fr.namemc.com/profile/femboyservice.1) / [scriptservice__](https://discord.com/users/1371531622960332851)
 
 ---
 ## Plugin en plus
